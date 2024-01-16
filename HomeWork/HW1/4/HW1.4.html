@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HW1.4 Test Area</title>
+</head>
+<body>
+    <div id="Q2">
+        <h1>Q2 Test</h1>
+            <h3>The point array is: (1,9), (2,5), (7,8), (4,9), (7,1)</h2>
+        <div id="SuccessDiv">
+            <h4>Success:</h4>
+            <h5>The point is (1,1)</h5>
+            <div id="ButtonDiv"> 
+                <input type="button" value="Go" onclick="SimilairPointsWithValues(PointArray, 1, 9)">
+            </div>
+            <p id="Q2SuccessP"></p>
+        </div>
+        <div id="FailDiv">
+            <h4>Fail:</h4>
+            <h5>The point is (1,1)</h5>
+            <div id="ButtonDiv"> 
+                <input type="button" value="Go" onclick="SimilairPointsWithValues(PointArray, 1, 1)">
+            </div>
+            <p id="Q2SFailP"></p>
+        </div>
+        
+    </div>
+
+    <div id="Q3">
+        <h1>Q3 Test</h1>
+            <h3>The point array is: (1,9), (2,5), (7,8), (4,9), (7,1)</h2>
+        <div id="SuccessDiv">
+            <h4>Success:</h4>
+            <h5>The point is (2,5)</h5>
+            <div id="ButtonDiv"> 
+                <input type="button" value="Go" onclick="SimilairPointsWithPoint(PointArray, PointSuccess)">
+            </div>
+            <p id="Q3SuccessP"></p>
+        </div>
+        <div id="FailDiv">
+            <h4>Fail:</h4>
+            <h3>The point is (3,3)</h3>
+            <div id="ButtonDiv"> 
+                <input type="button" value="Go" onclick="SimilairPointsWithPoint(PointArray, PointFail)">
+            </div>
+            <p id="Q3SFailP"></p>
+        </div>
+        
+    </div>
+
+    <div id="Q4">
+        <h1>Q4 Test</h1>
+            <h3>The point array is: (1,9), (2,5), (7,8), (4,9), (7,1)</h2>
+        <div id="SuccessDiv">
+            <h4>Trip length:</h4>
+            <div id="ButtonDiv"> 
+                <input type="button" value="Go" onclick="TripDistance(PointArray)">
+            </div>
+            <p id="Q4SuccessP"></p>
+        </div>  
+    </div>
+    
+    
+    
+
+</body>
+</html>
+
+<script src="HW1.4.js"></script>
