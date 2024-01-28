@@ -26,6 +26,7 @@ export default class CCButtonChangeColor extends Component {
                 <div ref={this.mainDiv} id="main" style={{
                     border: "white solid 3px",
                     width: "200px",
+                    margin: "auto"
 
                 }}>
                     <button onClick={this.changeColor}>Green</button><br />
