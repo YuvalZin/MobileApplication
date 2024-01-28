@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import React, { Component } from "react";
 import CCButtonChangeColor from './FuncComps/ClassComps/CCButtonChangeColor'
+import CCIsPsychometry from './FuncComps/ClassComps/CCIsPsychometry'
 import './App.css'
 
 function App() {
@@ -9,7 +9,9 @@ function App() {
   return (
     <>
     
-      <CCButtonChangeColor/>
+      <CCButtonChangeColor/><br/>
+      <CCIsPsychometry/><br/>
+
     </>
   )
 }
