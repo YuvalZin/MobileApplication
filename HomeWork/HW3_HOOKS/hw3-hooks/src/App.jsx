@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import FCSignInSide from "../src/FuncComps/SignInSide"
 
 import './App.css'
 
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <>
+    <FCSignInSide/>
     </>
   )
 }
