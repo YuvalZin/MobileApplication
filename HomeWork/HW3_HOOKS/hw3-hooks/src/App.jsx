@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import FCSignInSide from "../src/FuncComps/SignInSide"
+import FCLogin from "../src/FuncComps/FCLogin"
+import FCRegister from '../src/FuncComps/FCRegister'
 
 import './App.css'
 
@@ -30,7 +31,8 @@ function App() {
 
   return (
     <>
-    <FCSignInSide/>
+    <FCLogin/>
+    <FCRegister/>
     </>
   )
 }
