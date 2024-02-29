@@ -7,18 +7,63 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
+import { useState} from 'react'
+import './FCRegister.css';
 
 
 export default function Register() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
 
+    const [usernameErr, setUsernameErr] = useState("");
+
+    //validate username field to be non hebrew
+    const nonHebrewRegex = /[^\u0590-\u05FF\s]/; 
+    const isNonHebrew = (input) => {
+        return nonHebrewRegex.test(input);
+      };
+    
+    const handleBlur = (e) =>{
+        console.log(e.target.id);
+        switch(e.target.id)
+        {
+            case "username":
+                console.log(e.target.value)
+
+                if(!isNonHebrew(e.target.value))
+                {
+                    setUsernameErr("hebrew");
+                }
+                break;
+            case "firstName":
+                break;
+            case "lastName":
+                break;
+            case "email":
+                break;
+            case "photo":
+                break;
+            case "birthdate":
+                break;
+            case "city":
+                break;
+            case "street":
+                break;
+            case "streetNum":
+                break;
+            case "password":
+                break;
+            case "confirmPassword":
+                break;
+        }
+    }
+    
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log({
+          email: data.get('email'),
+          password: data.get('password'),
+        });
+      };
   return (
         
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -47,7 +92,9 @@ export default function Register() {
             name="username"
             autoComplete="username"
             autoFocus
+            onBlur={handleBlur}
             />
+            <span>{usernameErr}</span>
             <TextField
             margin="normal"
             required
