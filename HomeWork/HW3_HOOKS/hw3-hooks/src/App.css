@@ -1,3 +1,16 @@
-
+body{
+    background-image: url('src/assets/hw3bg_l.jpg');
+    background-repeat: no-repeat ;
+    background-size: cover ;
+    height: 100%;
+    transition: height 0.5s ease;
+    background-position-x: center ;
+    display: flex;
+    font-family: "Roboto,sans-serif";
+}
+#root{
+    margin: auto;
+    width: 100%;
+}
 
 
