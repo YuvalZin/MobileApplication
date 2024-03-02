@@ -361,6 +361,7 @@ export default function Register(props) {
                     />
                     <span>{confirmPassErr}</span>
                     <span>{props.userExistErr}</span>
+                    <br />
                     <span>{validationErr}</span>
 
                     <Button

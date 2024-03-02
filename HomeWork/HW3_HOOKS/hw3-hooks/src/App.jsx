@@ -41,10 +41,6 @@ function App() {
     let usersTmp = [];
     if (localStorage["users"] != null) {
       usersTmp = JSON.parse(localStorage.getItem("users"));
-      console.log(usersTmp);
-    }
-    else {
-      console.log("users is null");
     }
     return usersTmp;
   }
@@ -55,15 +51,9 @@ function App() {
     const username = loginInfo.get("username");
     const password = loginInfo.get("password");
 
-    // const loggedInUser = sessionStorage.getItem('userLogged');
-    // if (loggedInUser) {
-    //   console.log("There is already a user logged in:");
-    //   return;
-    // }
     const user = users.find(u => u.userName === username && u.password === password);
     if (user) {
       // User found -login
-      console.log("User logged in:", user);
       sessionStorage.setItem('userLogged', JSON.stringify(user));
       setLoginIsVisible(false);
       setSignUpIsVisible(false);
@@ -86,21 +76,21 @@ function App() {
   }
 
   const addUserToLocalstorage = (user) => {
-    let updatedUsers = loadUsers(); 
+    let updatedUsers = loadUsers();
     //validate if username already exists.
     if (updatedUsers.map(u => u.userName).includes(user.userName)) {
       setUserExistErr("Username already exists in our system!");
-      return; 
+      return;
     }
-    
+
     setUserExistErr("");
-    updatedUsers.push(user); 
-    localStorage.setItem('users', JSON.stringify(updatedUsers)); 
+    updatedUsers.push(user);
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+    sessionStorage.setItem('userLogged', JSON.stringify(user));
   };
 
   //user register 
   const registerUser = (formData) => {
-    console.log(formData.get("city"));
     let user =
     {
       userName: formData.get("username"),
@@ -115,7 +105,10 @@ function App() {
       password: formData.get("password")
     }
     addUserToLocalstorage(user);
-
+    setLoginIsVisible(false);
+    setSignUpIsVisible(false);
+    setButtonsIsVisible(false);
+    setEditIsVisible(true);
   }
 
 

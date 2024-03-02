@@ -11,7 +11,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 export default function FCProfile(props) {
   const [user, setUser] = useState(null);
-  const [msg, setMsg] = useState("login bro");
+  const [msg, setMsg] = useState("You must log in to the system");
 
   useEffect(() => {
     const loggedUser = sessionStorage.getItem('userLogged');
@@ -34,7 +34,7 @@ export default function FCProfile(props) {
     const address = user.street + " " + user.streetNum + ", " + user.city;
     const birthday = user.birthdate;
     const avatar = user.photo;
-
+    console.log(avatar);
     return (
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} >
         <Box
