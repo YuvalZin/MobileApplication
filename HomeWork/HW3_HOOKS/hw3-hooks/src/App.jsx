@@ -8,13 +8,14 @@ import FCProfile from "../src/FuncComps/FCProfile";
 import './App.css';
 import FCEditDetails from './FuncComps/FCEditDetails';
 import Swal from 'sweetalert2';
+import FCSystemAdmin from './FuncComps/FCSystemAdmin';
 
 
 function App() {
 
   const [loginIsVisible, setLoginIsVisible] = useState(false);
   const [signUpIsVisible, setSignUpIsVisible] = useState(false);
-  const [buttonsIsVisible, setButtonsIsVisible] = useState(true);
+  const [buttonsIsVisible, setButtonsIsVisible] = useState(false);
   const [editVisible, setEditVisible] = useState('none');
 
 
@@ -122,12 +123,7 @@ function App() {
   const editUser = (formData) => {
 
     let users = loadUsers();
-    console.log(formData.email);
     let userIndex = users.findIndex(u => u.email === formData.email);
-    console.log("hi")
-    console.log(users[userIndex]);
-    console.log(userIndex);
-    console.log(users);
 
     users[userIndex].userName = formData.username;
     users[userIndex].firstName = formData.firstName;
@@ -154,8 +150,16 @@ function App() {
     setEditVisible('none');
   }
 
+  const adminEditUser = (userEmail) =>
+  {
+
+  }
+
   return (
     <>
+      <div>
+        <FCSystemAdmin setEditVisible={setEditVisible} adminEditUser={adminEditUser}/>
+      </div>
       <div style={{ display: 'flex', justifyContent: "center" }}>
         <div style={{ width: '35%' }}>
           <FCProfile setEditVisible={setEditVisible} logOut={logoutUser} />
