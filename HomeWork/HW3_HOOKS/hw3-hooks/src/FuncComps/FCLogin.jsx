@@ -41,10 +41,10 @@ export default function Login(props) {
         if (e.target.value == "") errStr = " ";
         else {
           if (!isValidUsername(e.target.value)) {
-            errStr += "hebrew.";
+            errStr += "Username must contain only English characters";
           }
           if (e.target.value.length > 60) {
-            errStr += "too long";
+            errStr += "Username is too long (above 60)";
           }
         }
         setUsernameErr(errStr);
@@ -53,14 +53,14 @@ export default function Login(props) {
       case "password":
         if (e.target.value != "") {
           if (e.target.value.length < 7 || e.target.value.length > 12) {
-            errStr = "ur pass must be between 7 to 12 chars";
+            errStr = "Your password must be between 7 to 12 characters";
           }
           const HasSpecial = /[!@#$%^&*(),.?":{}|<>]/;
           const HasUpper = /[A-Z]/;
           const HasNumber = /\d/;
           console.log(HasNumber.test(e.target.value) && HasSpecial.test(e.target.value) && HasUpper.test(e.target.value));
           if (!(HasNumber.test(e.target.value) && HasSpecial.test(e.target.value) && HasUpper.test(e.target.value))) {
-            errStr1 = "ur pass must contain at least one:num,special char,uppercase";
+            errStr1 = "Your password must contain at least one number, special character, and uppercase";
           }
         }
         setPassErr1(errStr);

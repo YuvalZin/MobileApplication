@@ -1,16 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
 body{
     background-image: url('src/assets/hw3bg_l.jpg');
     background-repeat: no-repeat ;
-    background-size: cover ;
+    background-size:cover ;
     height: 100%;
     transition: height 0.5s ease;
     background-position-x: center ;
     display: flex;
-    font-family: "Roboto,sans-serif";
+    font-family: 'Roboto', sans-serif;
 }
+
 #root{
     margin: auto;
     width: 100%;
 }
+span {
+    color: red;
+    font-size:10pt;
+    font-family: 'Roboto', sans-serif;
 
+  }
+  #email{
+    
+    color: rgb(217, 217, 217);
+
+  }
 

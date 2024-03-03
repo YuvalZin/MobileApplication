@@ -29,6 +29,24 @@ export default function Register(props) {
     const [confirmPassErr, setConfirmPassErr] = useState("");
     const [validationErr, setValidationErr] = useState("");
 
+    const [imageSrc, setImageSrc] = useState('');
+
+    const handleFileInputChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            // Set state with the data URL of the image
+            setImageSrc(reader.result);
+        };
+
+        if (file) {
+            // Read the image file as a data URL
+            reader.readAsDataURL(file);
+        }
+    };
+
+
     //validate username field to be non hebrew
     const nonHebrewRegex = /[^\u0590-\u05FF\s]/;
 
@@ -87,10 +105,10 @@ export default function Register(props) {
                 if (e.target.value == "") errStr = " ";
                 else {
                     if (!isValidUsername(e.target.value)) {
-                        errStr += "hebrew.";
+                        errStr = "Username must contain only English characters";
                     }
                     if (e.target.value.length > 60) {
-                        errStr += "too long";
+                        errStr = "Username is too long (above 60)";
                     }
                 }
                 setUsernameErr(errStr);
@@ -99,7 +117,7 @@ export default function Register(props) {
 
             case "firstName":
                 if (!/^[a-zA-Z]+$/.test(e.target.value)) {
-                    errStr = "only letters in english";
+                    errStr = "First Name must contain only English characters";
                 }
                 setFirstNameErr(errStr);
                 break;
@@ -107,7 +125,7 @@ export default function Register(props) {
             case "lastName":
                 if (e.target.value != "") {
                     if (!/^[a-zA-Z]+$/.test(e.target.value)) {
-                        errStr = "only letters in english";
+                        errStr = "Last Name must contain only English characters";
                     }
                 }
                 setLastNameErr(errStr);
@@ -116,7 +134,7 @@ export default function Register(props) {
             case "email":
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(e.target.value)) {
-                    errStr = "Email is not valid";
+                    errStr = "Please enter a valid email address";
                 }
                 setEmailErr(errStr);
                 break;
@@ -124,7 +142,7 @@ export default function Register(props) {
             case "photo":
                 if (e.target.files[0]) {
                     if (!isValidImageFile(e.target.files[0])) {
-                        errStr = "img not valid"
+                        errStr = "Please upload a valid image file (jpg/jpeg)"
                     }
                 }
                 setPicErr(errStr);
@@ -133,7 +151,7 @@ export default function Register(props) {
             case "birthdate":
                 if (e.target.value) {
                     if (!isValidBirthday(e.target.value)) {
-                        errStr = "invalid date"
+                        errStr = "invalid date: Your age must be between 18 and 119 years old"
                     }
                 }
                 setDateErr(errStr);
@@ -146,7 +164,7 @@ export default function Register(props) {
                 const hebrewRegex = /^[\u0590-\u05FF\s]+$/;
                 if (e.target.value != "") {
                     if (!hebrewRegex.test(e.target.value)) {
-                        errStr = "only hebrew bdalak";
+                        errStr = "Street Name must contain only Hebrew characters";
                     }
                 }
                 setStreetErr(errStr);
@@ -155,7 +173,7 @@ export default function Register(props) {
             case "streetNum":
                 if (e.target.value != "") {
                     if (!(e.target.value > 0)) {
-                        errStr = "not a valid num";
+                        errStr = "Please enter a valid street number";
                     }
                 }
                 setStNumErr(errStr);
@@ -165,13 +183,13 @@ export default function Register(props) {
                 setPass(e.target.value);
                 if (e.target.value != "") {
                     if (e.target.value.length < 7 || e.target.value.length > 12) {
-                        errStr = "ur pass must be between 7 to 12 chars";
+                        errStr = "Your password must be between 7 to 12 characters";
                     }
                     const HasSpecial = /[!@#$%^&*(),.?":{}|<>]/;
                     const HasUpper = /[A-Z]/;
                     const HasNumber = /\d/;
                     if (!(HasNumber.test(e.target.value) && HasSpecial.test(e.target.value) && HasUpper.test(e.target.value))) {
-                        errStr1 = "ur pass must contain at least one:num,special char,uppercase";
+                        errStr1 = "Your password must contain at least one number, special character, and uppercase";
                     }
                 }
                 setPassErr1(errStr);
@@ -182,7 +200,7 @@ export default function Register(props) {
 
                 if (e.target.value != "") {
                     if (pass !== e.target.value) {
-                        errStr = "password not match!";
+                        errStr = "Passwords do not match!";
                     }
                 }
                 setConfirmPassErr(errStr);
@@ -191,13 +209,16 @@ export default function Register(props) {
     }
 
     const handleSubmit = (event) => {
-        const data = new FormData(event.currentTarget);
+        const data1 = new FormData(event.currentTarget);
+        const data = Object.fromEntries(data1.entries());
+        data.photo = URL.createObjectURL(data.photo);
         event.preventDefault();
         if (!usernameErr && !firstname && !lastname &&
             !mail && !pic && !date && !street && !stNum && !passErr1 && !passErr2) {
+            // data.set('photo', imageSrc);
             props.sendForm2P(data);
         }
-        else setValidationErr("Please make sure all fields are filled and valid");
+        else setValidationErr("Please ensure all fields are completed correctly");
 
     };
 
@@ -206,8 +227,8 @@ export default function Register(props) {
         <Grid item xs={12} sm={8} md={6} component={Paper} elevation={6} >
             <Box
                 sx={{
-                    py:3,
-                    px:8,
+                    py: 3,
+                    px: 8,
                     my: 8,
                     mx: 1,
                     display: 'flex',
@@ -279,6 +300,7 @@ export default function Register(props) {
                         InputLabelProps={{
                             shrink: true,
                         }}
+                        // onChange={handleFileInputChange}
                         onBlur={handleError}
                     />
                     <span>{pic}</span>

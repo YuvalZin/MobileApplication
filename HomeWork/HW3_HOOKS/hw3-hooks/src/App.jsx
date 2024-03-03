@@ -7,16 +7,21 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import FCProfile from "../src/FuncComps/FCProfile";
 import './App.css';
 import FCEditDetails from './FuncComps/FCEditDetails';
+import Swal from 'sweetalert2';
+
 
 function App() {
 
   const [loginIsVisible, setLoginIsVisible] = useState(false);
   const [signUpIsVisible, setSignUpIsVisible] = useState(false);
   const [buttonsIsVisible, setButtonsIsVisible] = useState(true);
-  const [editProfileIsVisible, setEditIsVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState('none');
+
 
   const [userNotFoundErr, setUserNotFoundErr] = useState();
   const [userExistErr, setUserExistErr] = useState();
+
+
 
   const setLoginVisibility = (isVisible) => {
     if (isVisible) {
@@ -33,9 +38,14 @@ function App() {
 
   useEffect(() => {
     loadUsers();
+    if (sessionStorage.getItem('userLogged') != null) {
+      setButtonsIsVisible(false);
+    }
     return () => {
     }
   }, [])
+
+
 
   const loadUsers = () => {
     let usersTmp = [];
@@ -44,7 +54,6 @@ function App() {
     }
     return usersTmp;
   }
-
 
   const loginUser = (loginInfo) => {
     let users = loadUsers();
@@ -57,14 +66,13 @@ function App() {
       sessionStorage.setItem('userLogged', JSON.stringify(user));
       setLoginIsVisible(false);
       setSignUpIsVisible(false);
-      setButtonsIsVisible(false);
       setEditIsVisible(true);
       setUserNotFoundErr("");
 
 
     } else {
       // User not found / incorrect password
-      setUserNotFoundErr("Invalid username or password");
+      setUserNotFoundErr("Username or password is incorrect");
     }
   }
 
@@ -78,8 +86,8 @@ function App() {
   const addUserToLocalstorage = (user) => {
     let updatedUsers = loadUsers();
     //validate if username already exists.
-    if (updatedUsers.map(u => u.userName).includes(user.userName)) {
-      setUserExistErr("Username already exists in our system!");
+    if (updatedUsers.map(u => u.email).includes(user.email)) {
+      setUserExistErr("This email is already in use. Please choose another one");
       return;
     }
 
@@ -87,53 +95,86 @@ function App() {
     updatedUsers.push(user);
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     sessionStorage.setItem('userLogged', JSON.stringify(user));
+    setLoginIsVisible(false);
+    setSignUpIsVisible(false);
+    setEditIsVisible(true);
   };
 
   //user register 
   const registerUser = (formData) => {
     let user =
     {
-      userName: formData.get("username"),
-      firstName: formData.get("firstName"),
-      lastName: formData.get("lastName"),
-      email: formData.get("email"),
-      photo: formData.get("photo"),
-      birthdate: formData.get("birthdate"),
-      city: formData.get("city"),
-      street: formData.get("street"),
-      streetNum: formData.get("streetNum"),
-      password: formData.get("password")
+      userName: formData.username,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      photo: formData.photo,
+      birthdate: formData.birthdate,
+      city: formData.city,
+      street: formData.street,
+      streetNum: formData.streetNum,
+      password: formData.password
     }
     addUserToLocalstorage(user);
-    setLoginIsVisible(false);
-    setSignUpIsVisible(false);
-    setButtonsIsVisible(false);
-    setEditIsVisible(true);
+
   }
 
+  const editUser = (formData) => {
+
+    let users = loadUsers();
+    console.log(formData.email);
+    let userIndex = users.findIndex(u => u.email === formData.email);
+    console.log("hi")
+    console.log(users[userIndex]);
+    console.log(userIndex);
+    console.log(users);
+
+    users[userIndex].userName = formData.username;
+    users[userIndex].firstName = formData.firstName;
+    users[userIndex].lastName = formData.lastName;
+    users[userIndex].birthdate = formData.birthdate;
+    users[userIndex].street = formData.street;
+    users[userIndex].streetNum = formData.streetNum;
+    users[userIndex].city = formData.city;
+
+    if (formData.photo != "") {
+      users[userIndex].photo = formData.photo;
+    }
+
+    if (formData.password != "") {
+      users[userIndex].password = formData.password;
+    }
+    localStorage.setItem('users', JSON.stringify(users));
+    sessionStorage.setItem('userLogged', JSON.stringify(users[userIndex]));
+    Swal.fire({
+      title: "Changes Saved",
+      text: "Your updates have been successfully saved.",
+      icon: "success"
+    });
+    setEditVisible('none');
+  }
 
   return (
     <>
-
       <div style={{ display: 'flex', justifyContent: "center" }}>
-        <span style={{ width: '35%' }}>
-          <FCProfile logOut={logoutUser} />
-        </span>
+        <div style={{ width: '35%' }}>
+          <FCProfile setEditVisible={setEditVisible} logOut={logoutUser} />
+        </div>
       </div>
-      <div style={{ margin: 'auto', width: '45%' }}>
-        {editProfileIsVisible && <FCEditDetails />}
+      <div style={{ display:editVisible,margin: 'auto', width: '45%' }}>
+      <FCEditDetails sendUpdatedForm2P={editUser} />
       </div>
 
-      <div style={{ width: '100%', display: 'flex', justifyContent: "space-around" }}>
+      <div style={{ marginTop: '10%', width: '100%', display: 'flex', justifyContent: "space-around" }}>
 
 
         {buttonsIsVisible && <div>
           <Button
             onClick={() => setLoginVisibility(true)}
-            variant="contained" color='inherit' endIcon={<LoginIcon color='secondary' />} style={{ marginTop: '30%', marginRight: 20, width: 150, padding: 20 }}>Log In</Button>
+            variant="contained" color='inherit' endIcon={<LoginIcon color='secondary' />} style={{ marginRight: 20, width: 150, padding: 20 }}>Log In</Button>
           <Button
             onClick={() => setSignUpVisiblity(true)}
-            variant="contained" color='inherit' endIcon={<AppRegistrationIcon color='secondary' />} style={{ marginTop: '30%', marginLeft: 20, width: 150, padding: 20 }}>Sign Up</Button>
+            variant="contained" color='inherit' endIcon={<AppRegistrationIcon color='secondary' />} style={{ marginLeft: 20, width: 150, padding: 20 }}>Sign Up</Button>
         </div>}
       </div>
 

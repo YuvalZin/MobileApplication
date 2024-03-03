@@ -22,6 +22,14 @@ export default function FCProfile(props) {
     }
   }, [sessionStorage.getItem('userLogged')]);
 
+  const editProfileClicked = () => {
+    props.setEditVisible("block");
+  }
+
+const openGameURL =()=>{
+  window.open("https://gameforge.com/en-US/littlegames/bloons-tower-defense-4/#", '_blank');
+}
+
   const logOut = () => {
     sessionStorage.removeItem('userLogged');
     setUser(null);
@@ -51,7 +59,7 @@ export default function FCProfile(props) {
             <Avatar sx={{ border: '3px solid purple', width: 80, height: 80, m: 1, bgcolor: 'secondary.main', overflow: 'hidden' }}>
               <img style={{ width: '100%', height: '100%', objectFit: 'cover' }} src={avatar} alt="" />
             </Avatar>
-            <div style={{ width: '70%', paddingLeft: 10, display: 'flex', flexDirection: 'column', fontFamily: "Roboto,sans-serif" }}>
+            <div style={{ width: '70%', paddingLeft: 10, display: 'flex', flexDirection: 'column', fontFamily: "'Roboto',sans-serif" }}>
               <h2 style={{ color: 'black' }}>{name}</h2>
               <div style={{ color: 'black', paddingBottom: 8, fontSize: 14, display: 'flex' }}>{<EmailIcon fontSize="14px" />}<span>&nbsp;</span>{mail}</div>
               <div style={{ color: 'black', paddingBottom: 8, fontSize: 14, display: 'flex' }}>{<HomeIcon fontSize="16px" />}<span>&nbsp;</span>{address}</div>
@@ -61,18 +69,18 @@ export default function FCProfile(props) {
           </div>
           <div style={{ display: 'flex' }}>
             <Button
-              style={{ fontFamily: "Roboto,sans-serif", textTransform: 'none' }}
-              type="submit"
+              style={{ fontFamily: "'Roboto',sans-serif", textTransform: 'none' }}
               fullWidth
               variant="contained"
+              onClick={editProfileClicked}
               sx={{ mr: 1, mt: 3, mb: 2 }}
             >Edit Profile
             </Button>
             <Button
               style={{ fontFamily: "Roboto,sans-serif", textTransform: 'none' }}
               color='secondary'
-              type="submit"
               fullWidth
+              onClick={openGameURL}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >My Game
@@ -82,6 +90,11 @@ export default function FCProfile(props) {
       </Grid>
     );
   } else {
-    return msg;
+    return (
+      <>
+        <div style={{ paddingTop: 18, backgroundColor: 'white', textAlign: 'center' }}>{msg}</div>
+
+      </>
+    );
   }
 }

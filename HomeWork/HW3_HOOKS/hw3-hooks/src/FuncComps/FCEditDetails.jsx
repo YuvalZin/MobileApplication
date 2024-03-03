@@ -18,11 +18,11 @@ export default function FCEditDetails(props) {
         const [currentUsername, setUsername] = useState(user.userName);
         const [currentFirstname, setFirstName] = useState(user.firstName);
         const [currentLastname, setLastName] = useState(user.lastName);
-        const [currentCity, setNewCity] = useState(user.city);
+        const [currentCity,] = useState(user.city);
         const [currentDate, setBirthdate] = useState(user.birthdate);
         const [currentStreet, setNewStreet] = useState(user.street);
         const [currentStNum, setNewStreetNum] = useState(user.streetNum);
-
+        const [currentEmail,] = useState(user.email);
 
         const [usernameErr, setUsernameErr] = useState("");
         const [firstname, setFirstNameErr] = useState("");
@@ -34,7 +34,7 @@ export default function FCEditDetails(props) {
         const [pass, setPass] = useState("");
         const [passErr1, setPassErr1] = useState("");
         const [passErr2, setPassErr2] = useState("");
-        const [confirmPassErr, setConfirmPassErr] = useState("");
+        // const [confirmPassErr, setConfirmPassErr] = useState("");
 
         //validate username field to be non hebrew
         const nonHebrewRegex = /[^\u0590-\u05FF\s]/;
@@ -191,15 +191,14 @@ export default function FCEditDetails(props) {
         }
 
         const handleSubmit = (event) => {
-            const data = new FormData(event.currentTarget);
+            const data1 = new FormData(event.currentTarget);
+            const data = Object.fromEntries(data1.entries());
+            data.photo = URL.createObjectURL(data.photo);
             event.preventDefault();
-            if (!usernameErr && !firstname && !lastname && !pic &&
-                !date && !street && !stNum && !passErr1 && !passErr2) {
-                console.log("grapeee");
-                props.sendForm2P(data);
+            if (!usernameErr && !firstname && !lastname &&
+                !pic && !date && !street && !stNum && !passErr1 && !passErr2) {
+                props.sendUpdatedForm2P(data);
             }
-            else console.log("somnthing wrong");
-
         };
 
         return (
@@ -223,6 +222,21 @@ export default function FCEditDetails(props) {
                         Edit Profile
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            tabIndex={-1}
+
+                            autoFocus={false}
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            value={currentEmail}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+
+                        />
                         <TextField
                             margin="normal"
                             required
@@ -265,10 +279,9 @@ export default function FCEditDetails(props) {
 
                         <TextField
                             margin="normal"
-                            required
                             fullWidth
                             id="photo"
-                            label="Photo"
+                            label="Photo (Optional)"
                             name="photo"
                             type="file"
                             accept="image/*"
@@ -342,10 +355,9 @@ export default function FCEditDetails(props) {
 
                         <TextField
                             margin="normal"
-                            required
                             fullWidth
                             name="password"
-                            label="Password"
+                            label="New Password (Optional)"
                             type="password"
                             id="password"
                             onChange={handleError}
@@ -353,17 +365,7 @@ export default function FCEditDetails(props) {
                         <span>{passErr1}</span><br />
                         <span>{passErr2}</span>
 
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="confirmPassword"
-                            label="Confirm Password"
-                            type="password"
-                            id="confirmPassword"
-                            onChange={handleError}
-                        />
-                        <span>{confirmPassErr}</span>
+
 
                         <Button
                             type="submit"
@@ -371,7 +373,7 @@ export default function FCEditDetails(props) {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Edit Profile
                         </Button>
                     </Box>
                 </Box>
