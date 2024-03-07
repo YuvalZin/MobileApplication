@@ -15,6 +15,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 export default function Register(props) {
 
+    // State variables for error messages 
     const [usernameErr, setUsernameErr] = useState("");
     const [firstname, setFirstNameErr] = useState("");
     const [lastname, setLastNameErr] = useState("");
@@ -29,49 +30,7 @@ export default function Register(props) {
     const [confirmPassErr, setConfirmPassErr] = useState("");
     const [validationErr, setValidationErr] = useState("");
 
-    const [imageSrc, setImageSrc] = useState('');
-
-    const handleFileInputChange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            // Set state with the data URL of the image
-            setImageSrc(reader.result);
-        };
-
-        if (file) {
-            // Read the image file as a data URL
-            reader.readAsDataURL(file);
-        }
-    };
-
-
-    //validate username field to be non hebrew
-    const nonHebrewRegex = /[^\u0590-\u05FF\s]/;
-
-    function isValidUsername(input) {
-        const regex = /^[a-zA-Z0-9!@#$%^&*()_+-=<>?{}[\]:";',.\/|\\]*$/;
-        return regex.test(input);
-    }
-
-    function isValidImageFile(file) {
-        if (file && file.name) {
-            let filename = file.name;
-            return filename.toLowerCase().endsWith('.jpg') || filename.toLowerCase().endsWith('.jpeg');
-        }
-        return false; // Return false if file is null, undefined, or has no name property
-    }
-
-    function isValidBirthday(date) {
-        const selectedDate = new Date(date);
-        if (isNaN(selectedDate.getTime()) || selectedDate > new Date()) {
-            return false;
-        }
-        return true;
-    }
-
-
+    // Array of Israeli cities for autocomplete
     const citiesInIsrael = [
         'Jerusalem',
         'Tel Aviv',
@@ -95,8 +54,36 @@ export default function Register(props) {
         'Nazareth'
     ];
 
+    //validate username field to be non hebrew
+    const nonHebrewRegex = /[^\u0590-\u05FF\s]/;
+    function isValidUsername(input) {
+        const regex = /^[a-zA-Z0-9!@#$%^&*()_+-=<>?{}[\]:";',.\/|\\]*$/;
+        return regex.test(input);
+    }
 
+    function isValidImageFile(file) {
+        if (file && file.name) {
+            let filename = file.name;
+            return filename.toLowerCase().endsWith('.jpg') || filename.toLowerCase().endsWith('.jpeg');
+        }
+        return false; // Return false if file is null, undefined, or has no name property
+    }
 
+    function isValidBirthday(date) {
+        const selectedDate = new Date(date);
+        const currentDate = new Date();
+        const minBirthDate = new Date(currentDate);
+        minBirthDate.setFullYear(minBirthDate.getFullYear() - 120); // 120 years ago
+        const maxBirthDate = new Date(currentDate);
+        maxBirthDate.setFullYear(maxBirthDate.getFullYear() - 18); // 18 years ago
+
+        if (isNaN(selectedDate.getTime()) || selectedDate > currentDate || selectedDate < minBirthDate || selectedDate > maxBirthDate) {
+            return false;
+        }
+        return true;
+    }
+
+    // Function to handle input validation errors -on change/on blur events
     const handleError = (e) => {
         let errStr = "";
         let errStr1 = "";
@@ -158,6 +145,7 @@ export default function Register(props) {
                 break;
 
             case "city":
+                // No validation needed for city
                 break;
 
             case "street":
@@ -208,17 +196,20 @@ export default function Register(props) {
         }
     }
 
+    // Function to handle form submission
     const handleSubmit = (event) => {
         const data1 = new FormData(event.currentTarget);
         const data = Object.fromEntries(data1.entries());
         data.photo = URL.createObjectURL(data.photo);
         event.preventDefault();
+        // Check if all fields are valid and no active errors shown on screen
         if (!usernameErr && !firstname && !lastname &&
             !mail && !pic && !date && !street && !stNum && !passErr1 && !passErr2) {
-            // data.set('photo', imageSrc);
+            // Send form data
             props.sendForm2P(data);
         }
-        else setValidationErr("Please ensure all fields are completed correctly");
+        else setValidationErr("Please ensure all fields are completed correctly");  // Display validation error message
+
 
     };
 
@@ -251,7 +242,7 @@ export default function Register(props) {
                         label="Username"
                         name="username"
                         autoFocus
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{usernameErr}</span>
                     <TextField
@@ -262,7 +253,7 @@ export default function Register(props) {
                         id="firstName"
                         label="First Name"
                         name="firstName"
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{firstname}</span>
                     <TextField
@@ -272,7 +263,7 @@ export default function Register(props) {
                         id="lastName"
                         label="Last Name"
                         name="lastName"
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{lastname}</span>
 
@@ -284,7 +275,7 @@ export default function Register(props) {
                         label="Email Address"
                         name="email"
                         autoComplete="email"
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{mail}</span>
 
@@ -301,7 +292,7 @@ export default function Register(props) {
                             shrink: true,
                         }}
                         // onChange={handleFileInputChange}
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{pic}</span>
 
@@ -316,7 +307,7 @@ export default function Register(props) {
                         InputLabelProps={{
                             shrink: true,
                         }}
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{date}</span>
 
@@ -354,7 +345,7 @@ export default function Register(props) {
                         label="Street Number"
                         name="streetNum"
                         type="number"
-                        onBlur={handleError}
+                        onChange={handleError}
                     />
                     <span>{stNum}</span>
 

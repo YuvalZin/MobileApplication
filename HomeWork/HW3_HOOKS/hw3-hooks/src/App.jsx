@@ -6,17 +6,17 @@ import LoginIcon from '@mui/icons-material/Login';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import FCProfile from "../src/FuncComps/FCProfile";
 import './App.css';
-import FCEditDetails from './FuncComps/FCEditDetails';
-import Swal from 'sweetalert2';
+import LogoutIcon from '@mui/icons-material/Logout';
 import FCSystemAdmin from './FuncComps/FCSystemAdmin';
 
 
 function App() {
 
+  //displaying / hiding login/sign up according to states
   const [loginIsVisible, setLoginIsVisible] = useState(false);
   const [signUpIsVisible, setSignUpIsVisible] = useState(false);
-  const [buttonsIsVisible, setButtonsIsVisible] = useState(false);
-  const [editVisible, setEditVisible] = useState('none');
+  const [buttonsIsVisible, setButtonsIsVisible] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
 
   const [userNotFoundErr, setUserNotFoundErr] = useState();
@@ -24,6 +24,8 @@ function App() {
 
 
 
+
+//setting visibilty func on buttons clicked
   const setLoginVisibility = (isVisible) => {
     if (isVisible) {
       setSignUpIsVisible(!isVisible);
@@ -37,17 +39,21 @@ function App() {
     setSignUpIsVisible(isVisible);
   }
 
+  //load user on mount
   useEffect(() => {
     loadUsers();
-    if (sessionStorage.getItem('userLogged') != null) {
+    let userLogged = sessionStorage.getItem('userLogged')
+    if (userLogged) {
       setButtonsIsVisible(false);
+      if ((JSON.parse(userLogged)).userName == 'admin') {
+        setIsAdmin(true);
+      }
     }
-    return () => {
-    }
+
   }, [])
 
 
-
+  //Load users form ls
   const loadUsers = () => {
     let usersTmp = [];
     if (localStorage["users"] != null) {
@@ -56,34 +62,43 @@ function App() {
     return usersTmp;
   }
 
+  //Handle login user func
   const loginUser = (loginInfo) => {
     let users = loadUsers();
     const username = loginInfo.get("username");
     const password = loginInfo.get("password");
-
-    const user = users.find(u => u.userName === username && u.password === password);
-    if (user) {
-      // User found -login
-      sessionStorage.setItem('userLogged', JSON.stringify(user));
+    if (username == "admin" && password == "ad12343211ad") {
+      setIsAdmin(true);
+      let admin = { userName: username }
+      sessionStorage.setItem('userLogged', JSON.stringify(admin));
       setLoginIsVisible(false);
       setSignUpIsVisible(false);
-      setEditIsVisible(true);
-      setUserNotFoundErr("");
-
-
-    } else {
-      // User not found / incorrect password
-      setUserNotFoundErr("Username or password is incorrect");
+    }
+    else {
+      let user = users.find(u => u.userName === username && u.password === password);
+      if (user) {
+        // User found -login
+        sessionStorage.setItem('userLogged', JSON.stringify(user));
+        setLoginIsVisible(false);
+        setSignUpIsVisible(false);
+        setButtonsIsVisible(false);
+        setUserNotFoundErr("");
+      }
+      else {
+        // User not found / incorrect password - display error message.
+        setUserNotFoundErr("Username or password is incorrect");
+      }
     }
   }
 
   const logoutUser = () => {
-    setButtonsIsVisible(true);
     sessionStorage.clear();
-    setEditIsVisible(false);
-
+    // Clear user session data and reset admin status.
+    setIsAdmin(false);
+    setButtonsIsVisible(true);
   }
 
+  // This function adds a user to local storage.
   const addUserToLocalstorage = (user) => {
     let updatedUsers = loadUsers();
     //validate if username already exists.
@@ -92,17 +107,21 @@ function App() {
       return;
     }
 
+    // Clear any previous user existence error.
     setUserExistErr("");
     updatedUsers.push(user);
     localStorage.setItem('users', JSON.stringify(updatedUsers));
     sessionStorage.setItem('userLogged', JSON.stringify(user));
+    // Hide login and sign-up components and display main application.
     setLoginIsVisible(false);
     setSignUpIsVisible(false);
-    setEditIsVisible(true);
+    setButtonsIsVisible(false);
+
   };
 
   //user register 
   const registerUser = (formData) => {
+    // Construct user object from form data.
     let user =
     {
       userName: formData.username,
@@ -120,58 +139,22 @@ function App() {
 
   }
 
-  const editUser = (formData) => {
-
-    let users = loadUsers();
-    let userIndex = users.findIndex(u => u.email === formData.email);
-
-    users[userIndex].userName = formData.username;
-    users[userIndex].firstName = formData.firstName;
-    users[userIndex].lastName = formData.lastName;
-    users[userIndex].birthdate = formData.birthdate;
-    users[userIndex].street = formData.street;
-    users[userIndex].streetNum = formData.streetNum;
-    users[userIndex].city = formData.city;
-
-    if (formData.photo != "") {
-      users[userIndex].photo = formData.photo;
-    }
-
-    if (formData.password != "") {
-      users[userIndex].password = formData.password;
-    }
-    localStorage.setItem('users', JSON.stringify(users));
-    sessionStorage.setItem('userLogged', JSON.stringify(users[userIndex]));
-    Swal.fire({
-      title: "Changes Saved",
-      text: "Your updates have been successfully saved.",
-      icon: "success"
-    });
-    setEditVisible('none');
-  }
-
-  const adminEditUser = (userEmail) =>
-  {
-
-  }
-
   return (
     <>
-      <div>
-        <FCSystemAdmin setEditVisible={setEditVisible} adminEditUser={adminEditUser}/>
-      </div>
-      <div style={{ display: 'flex', justifyContent: "center" }}>
+      {isAdmin &&
+        <div >
+          <div style={{ textAlign: 'right', width: '100%' }}><span style={{ cursor: 'pointer' }} onClick={logoutUser}>{<LogoutIcon color='primary' />}</span></div>
+
+          <div style={{ paddingTop: '10%', margin: 'auto', width: '70%' }}>
+            <FCSystemAdmin style={{}} />
+          </div>
+        </div>}
+      {!isAdmin && <div style={{ marginTop: '15%', display: 'flex', justifyContent: "center" }}>
         <div style={{ width: '35%' }}>
-          <FCProfile setEditVisible={setEditVisible} logOut={logoutUser} />
+          <FCProfile logOut={logoutUser} />
         </div>
-      </div>
-      <div style={{ display:editVisible,margin: 'auto', width: '45%' }}>
-      <FCEditDetails sendUpdatedForm2P={editUser} />
-      </div>
-
-      <div style={{ marginTop: '10%', width: '100%', display: 'flex', justifyContent: "space-around" }}>
-
-
+      </div>}
+      {!isAdmin && <div style={{ marginTop: '3%', width: '100%', display: 'flex', justifyContent: "space-around" }}>
         {buttonsIsVisible && <div>
           <Button
             onClick={() => setLoginVisibility(true)}
@@ -180,7 +163,7 @@ function App() {
             onClick={() => setSignUpVisiblity(true)}
             variant="contained" color='inherit' endIcon={<AppRegistrationIcon color='secondary' />} style={{ marginLeft: 20, width: 150, padding: 20 }}>Sign Up</Button>
         </div>}
-      </div>
+      </div>}
 
 
       <div style={{ display: 'flex', justifyContent: "space-around", flexDirection: "column", alignItems: 'center' }}>
